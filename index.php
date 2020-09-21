@@ -33,9 +33,13 @@
  * ---------
  * Afin de pouvoir être sur que le visiteur souhaite voir une page existante, on maintient ici une liste des pages existantes
  */
+ini_set('display_startup_errors',1);
+ini_set('display_errors',1);
+error_reporting(-1);
 
 require __DIR__. '/vendor/autoload.php';
 
+use Symfony\Component\Routing\Loader\AnnotationDirectoryLoader;
 use \Symfony\Component\Routing\Route;
 use \Symfony\Component\Routing\RouteCollection;
 use \Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -44,7 +48,8 @@ use \Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use \Symfony\Component\Routing\Generator\UrlGenerator;
 //use \App\Controller\HelloController;
 //use \App\Controller\TaskController;
-use \Symfony\Component\Routing\Loader\PhpFileLoader;
+//use \Symfony\Component\Routing\Loader\PhpFileLoader;
+use \Symfony\Component\Routing\Loader\AnnotationFileLoader;
 use \Symfony\Component\Config\FileLocator;
 
 //$controller = new HelloController();
@@ -74,9 +79,19 @@ use \Symfony\Component\Config\FileLocator;
 
 //$loader = new PhpFileLoader(new FileLocator(__DIR__. '/config'));
 //$collection = $loader->load('routes.php');
-$loader = new \Symfony\Component\Routing\Loader\YamlFileLoader(new FileLocator(__DIR__. '/config'));
-$collection = $loader->load('routes.yaml');
+//$loader = new \Symfony\Component\Routing\Loader\YamlFileLoader(new FileLocator(__DIR__. '/config'));
+//$collection = $loader->load('routes.yaml');
 
+$classLoader =  require __DIR__ . '/vendor/autoload.php';
+\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader([$classLoader, 'loadClass']);
+
+//$loader = new AnnotationFileLoader(
+$loader = new AnnotationDirectoryLoader(
+    new FileLocator(__DIR__. '/src/Controller'),
+    new \App\Loader\CustomAnnotationClassLoader(new \Doctrine\Common\Annotations\AnnotationReader())
+);
+//$collection = $loader->load('HelloController.php');
+$collection = $loader->load(__DIR__ . '/src/Controller');
 //$collection->add('list', $listRoute);
 //$collection->add('create', $createRoute);
 //$collection->add('show', $showRoute);

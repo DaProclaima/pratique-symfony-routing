@@ -5,9 +5,13 @@ namespace App\Controller;
 
 
 use Exception;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController
 {
+    /**
+     * @Route("/", name="list")
+     */
     public function index( array $currentRoute)
     {
 //        dd("index de la liste des taches");
@@ -16,6 +20,9 @@ class TaskController
         require __DIR__ . '/../../pages/list.html.php';
     }
 
+    /**
+     * @Route("/show/{id}", name="show", requirements={"id": "\d+"})
+     */
     public function show(array $currentRoute)
     {
 //        dd('Affichage d\'une tâche');
@@ -35,6 +42,9 @@ class TaskController
         require __DIR__ . '/../../pages/show.html.php';
     }
 
+    /**
+     * @Route("/create", name="create", host="localhost", methods={"GET", "POST"}, schemes={"https", "http"})
+     */
     public function create(array $currentRoute)
     {
 //        dd('Création d\'une tâche');
